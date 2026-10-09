@@ -1,27 +1,31 @@
 package dev.ankitkumar.ordereventtracker.controller;
 
+import dev.ankitkumar.ordereventtracker.dto.OrderStatusResponseDto;
+import dev.ankitkumar.ordereventtracker.service.OrderService;
+import lombok.AllArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api")
+@AllArgsConstructor
 public class OrderController {
 
+    private OrderService orderService;
+
     @PostMapping("")
-    public String placeOrder(@RequestParam(name = "itemId") long itemid){
+    public ResponseEntity<OrderStatusResponseDto> placeOrder(@RequestParam(name = "itemId") long itemId) {
 
 
-        if(itemid < 1 || itemid > 12) throw
+        if (itemId < 1 || itemId > 12) throw
                 new IllegalArgumentException("Invalid order id passed.");
 
-        System.out.println("item : " + itemid);
 
-
-
-        return "Order Placed.";
+        return ResponseEntity.ok(orderService.createOrder(itemId));
     }
 
     @GetMapping("")
-    public String home(){
+    public String home() {
         return """
                 Available products:
                 ID   Product

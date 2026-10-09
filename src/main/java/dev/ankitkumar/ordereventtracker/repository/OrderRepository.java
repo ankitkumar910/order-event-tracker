@@ -1,4 +1,7 @@
 package dev.ankitkumar.ordereventtracker.repository;
 
-public interface OrderRepository {
+import dev.ankitkumar.ordereventtracker.entity.Order;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface OrderRepository extends JpaRepository<Order,Long> {
 }
