@@ -1,59 +1,66 @@
+
+
 # Order Event Tracker
 
-This is a simple Spring Boot project that exposes a small product catalog and accepts order requests.
+Minimal notes to run and understand the project.
 
-## What it does
+What it is
+- Small Spring Boot app that persists orders and advances their lifecycle by publishing/consuming `OrderEvent` messages on Kafka.
 
-- `GET /api` shows the available products
-- `POST /api?itemId=<id>` places an order for a valid product
-- Valid product IDs are from 1 to 12
+Requirements
+- Java 21, Maven (or `./mvnw`), Docker (for Kafka) and a database (MySQL or H2).
 
-## How to run
+Quick start
 
-Requirements:
-- Java 21
-- Maven
-
-From the project root, run:
+1) Start Kafka (from project root):
 
 ```bash
+docker-compose up -d
+```
+
+2) Configure `src/main/resources/application.properties` (DB and Kafka). Ensure at least:
+
+```properties
+spring.kafka.bootstrap-servers=localhost:9092
+spring.datasource.url=jdbc:mysql://localhost:3306/eventtrackerapp
+spring.datasource.username=root
+spring.datasource.password=<your-db-password>
+```
+
+3) Build & run:
+
+```bash
+./mvnw clean package
 ./mvnw spring-boot:run
 ```
 
-On Windows:
+API
+- GET  /api                — list products
+- POST /api?itemId=<id>   — place order (valid ids: 1..12)
 
-```powershell
-./mvnw.cmd spring-boot:run
-```
-
-Then open:
-
-```text
-http://localhost:8080/api
-```
-
-## Examples
-
-View products:
+Examples
 
 ```bash
 curl http://localhost:8080/api
+curl -X POST "http://localhost:8080/api?itemId=1"
 ```
 
-Place an order:
+Architecture
 
-```bash
-curl -X POST "http://localhost:8080/api?itemId=3"
+```mermaid
+flowchart LR
+  Client -->|POST /api| Controller[OrderController]
+  Controller --> Service[OrderService]
+  Service --> DB[(Database)]
+  Service --> Producer[OrderEventProducer]
+  Producer --> Kafka((order-event))
+  Kafka --> ConsumerWorker["OrderEventListener\ndo-next-phase-group"]
+  Kafka --> ConsumerNotifier["OrderEventListener\nnotification-group"]
 ```
 
-Response:
+Config tips
+- Set `spring.kafka.bootstrap-servers` to your Kafka address.
+- For quick testing use H2 (`jdbc:h2:mem:testdb`) and `spring.jpa.hibernate.ddl-auto=update`.
 
-```text
-Order Placed.
-```
+If you want the README even shorter or prefer I add a MySQL service to `docker-compose.yaml`, tell me which option you prefer.
 
-If the ID is invalid, the app returns an error message:
-
-```text
-Invalid order id passed.
-```

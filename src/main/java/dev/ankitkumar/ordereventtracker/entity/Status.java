@@ -11,5 +11,6 @@ public enum Status {
     OUT_FOR_DELIVERY,
     ATTEMPTED_DELIVERY,
     CANCELED,
-    REFUNDED
+    REFUNDED,
+    DELIVERED
 }
