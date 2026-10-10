@@ -1,8 +1,6 @@
-
-
 # Order Event Tracker
 
-Minimal notes to run and understand the project.
+Spring Boot application demonstrating event-driven order lifecycle using Kafka and relational database.
 
 What it is
 - Small Spring Boot app that persists orders and advances their lifecycle by publishing/consuming `OrderEvent` messages on Kafka.
@@ -18,14 +16,16 @@ Quick start
 docker-compose up -d
 ```
 
-2) Configure `src/main/resources/application.properties` (DB and Kafka). Ensure at least:
+2) Verify `src/main/resources/application.properties` has correct settings. Pre-configured with:
 
 ```properties
 spring.kafka.bootstrap-servers=localhost:9092
 spring.datasource.url=jdbc:mysql://localhost:3306/eventtrackerapp
 spring.datasource.username=root
-spring.datasource.password=<your-db-password>
+spring.datasource.password=ankit@123
 ```
+
+Update password or database settings if needed.
 
 3) Build & run:
 
@@ -59,8 +59,7 @@ flowchart LR
 ```
 
 Config tips
-- Set `spring.kafka.bootstrap-servers` to your Kafka address.
-- For quick testing use H2 (`jdbc:h2:mem:testdb`) and `spring.jpa.hibernate.ddl-auto=update`.
-
-If you want the README even shorter or prefer I add a MySQL service to `docker-compose.yaml`, tell me which option you prefer.
+- Kafka bootstrap server is set to `localhost:9092` (ensure Docker Kafka is running).
+- Database credentials are pre-configured; update password in properties if using different credentials.
+- For quick testing without MySQL, use H2 in-memory DB: `spring.datasource.url=jdbc:h2:mem:testdb`.
 
