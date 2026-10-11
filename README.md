@@ -40,9 +40,6 @@ flowchart TD
 
 The lifecycle consumer advances the order through its delivery stages, while the notification consumer independently processes events from the same topic. Failed-message handling is configured separately through retries and dead-letter publishing.
 
-
-## Order Event Flow
-
 The order progresses through the following lifecycle:
 
 `PLACED → CONFIRMED → SHIPPED → OUT_FOR_DELIVERY → DELIVERED`
